@@ -1,11 +1,10 @@
 import { useRouter } from "next/router";
 import { Fragment } from "react";
-import { getEventById } from "../../helpers/api-utils";
+import { getEventById, getAllEvents } from "../../helpers/api-utils";
 import EventSummary from "../../components/event-detail/event-summary";
 import EventLogistics from "../../components/event-detail/event-logistics";
 import EventContent from "../../components/event-detail/event-content";
 import ErrorAlert from "../../components/UI/error-alert";
-import { getStaticProps } from "..";
 
 const EventDetailPage = (props) => {
   const event = props.selectedEvent;
@@ -42,6 +41,16 @@ export async function getStaticProps(context) {
     props: {
       selectedEvent: singleEvent,
     },
+  };
+}
+
+export async function getStaticPaths() {
+  const allEvents = await getAllEvents();
+  const paths = allEvents.map((event) => ({ params: { eventId: event.id } }));
+
+  return {
+    paths: paths,
+    fallback: false,
   };
 }
 
