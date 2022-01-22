@@ -11,11 +11,15 @@ const FilteredEventsPage = (props) => {
 
   const filteredData = router.query.slug;
 
+  const { hasError, events } = props;
+
+  const { year, month } = props.date;
+
   if (!filteredData) {
     return <p className="center">Loading...</p>;
   }
 
-  if (props.hasError) {
+  if (hasError) {
     return (
       <Fragment>
         <ErrorAlert>
@@ -28,7 +32,7 @@ const FilteredEventsPage = (props) => {
     );
   }
 
-  const filteredEvents = props.events;
+  const filteredEvents = events;
 
   if (!filteredEvents || filteredEvents.length === 0) {
     return (
@@ -43,7 +47,7 @@ const FilteredEventsPage = (props) => {
     );
   }
 
-  const date = new Date(props.date.year, props.date.month - 1);
+  const date = new Date(year, month - 1);
   return (
     <Fragment>
       <ResultsTitle date={date} />
