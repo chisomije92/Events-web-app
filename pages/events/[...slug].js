@@ -3,7 +3,7 @@ import Head from "next/head";
 import { Fragment } from "react";
 import EventList from "../../components/events/event-list";
 import ResultsTitle from "../../components/events/results-title";
-import Button from "../../components/UI/button";
+import Button from "../../components/UI/Button";
 import ErrorAlert from "../../components/UI/error-alert";
 import { getFilteredEvents } from "../../helpers/api-utils";
 
@@ -16,6 +16,13 @@ const FilteredEventsPage = (props) => {
 
   const { year, month } = props.date;
 
+  const headData = (
+    <Head>
+      <title>Filtered Events</title>
+      <meta name="description" content={`Events listed for ${month}-${year}`} />
+    </Head>
+  );
+
   if (!filteredData) {
     return <p className="center">Loading...</p>;
   }
@@ -23,6 +30,7 @@ const FilteredEventsPage = (props) => {
   if (hasError) {
     return (
       <Fragment>
+        {headData}
         <ErrorAlert>
           <p>Values are Invalid. Please enter valid values!</p>
         </ErrorAlert>
@@ -38,6 +46,7 @@ const FilteredEventsPage = (props) => {
   if (!filteredEvents || filteredEvents.length === 0) {
     return (
       <Fragment>
+        {headData}
         <ErrorAlert>
           <p>Events unavailable for said period</p>
         </ErrorAlert>
@@ -51,13 +60,7 @@ const FilteredEventsPage = (props) => {
   const date = new Date(year, month - 1);
   return (
     <Fragment>
-      <Head>
-        <title>Filtered Events</title>
-        <meta
-          name="description"
-          content={`Events listed for ${month}-${year}`}
-        />
-      </Head>
+      {headData}
       <ResultsTitle date={date} />
       <EventList items={filteredEvents} />
     </Fragment>
