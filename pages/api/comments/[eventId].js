@@ -7,7 +7,7 @@ function handler(req, res) {
       !email.includes("@") ||
       !name ||
       name.trim() === "" ||
-      !test ||
+      !text ||
       name.trim() === ""
     ) {
       res.status(422).json({ message: "Invalid input." });
@@ -32,7 +32,7 @@ function handler(req, res) {
         text: "A first comment",
       },
       {
-        id: "d1",
+        id: "d2",
         name: "Jerry",
         text: "A second comment",
       },
