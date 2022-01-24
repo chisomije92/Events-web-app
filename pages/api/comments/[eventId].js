@@ -1,11 +1,18 @@
-import { MongoClient } from "mongodb";
+import {
+  connectDatabase,
+  insertDocument,
+  getAllDocuments,
+} from "../../../helpers/db-utils";
 
 async function handler(req, res) {
-  const client = await MongoClient.connect(
-    "mongodb+srv://Chisom:AhNQ9ZWDzfW3vc7@cluster0.w1dc5.mongodb.net/events?retryWrites=true&w=majority"
-  );
-
   const eventId = req.query.eventId;
+  let client;
+  try {
+    client = await connectDatabase();
+  } catch (err) {
+    res.status(500).json({ message: "Connection to Database failed!" });
+    return;
+  }
 
   if (req.method === "POST") {
     const { email, name, text } = req.body;
@@ -17,6 +24,7 @@ async function handler(req, res) {
       name.trim() === ""
     ) {
       res.status(422).json({ message: "Invalid input." });
+      client.close();
       return;
     }
 
@@ -27,22 +35,25 @@ async function handler(req, res) {
       eventId,
     };
 
-    const db = client.db();
-    const result = await db.collection("comments").insertOne(newComment);
-    console.log(result);
-    newComment.id = result.insertedId;
-    res.status(201).json({ message: "Added comment.", comment: newComment });
+    let result;
+    try {
+      result = await insertDocument(client, "comments", newComment);
+
+      newComment._id = result.insertedId;
+      res.status(201).json({ message: "Added comment.", comment: newComment });
+    } catch (err) {
+      res.status(500).json({ message: "Comment insertion failed" });
+    }
   }
 
   if (req.method === "GET") {
-    const db = client.db();
-    const documents = await db
-      .collection("comments")
-      .find()
-      .sort({ _id: -1 })
-      .toArray();
-
-    res.status(200).json({ comments: documents });
+    try {
+      const documents = await getAllDocuments(client, "comments", { _id: -1 });
+      res.status(200).json({ comments: documents });
+    } catch (err) {
+      res.status(500).json({ message: "Comments retrieval failed" });
+    }
+    client.close();
   }
 
   client.close();
