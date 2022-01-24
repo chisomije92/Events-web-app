@@ -4,6 +4,7 @@ import EventList from "../components/events/event-list";
 import NewsletterRegistration from "../components/input/newsletter-registration";
 
 const HomePage = (props) => {
+  console.log(process.env.REACT_APP_MY_API_KEY);
   return (
     <div>
       <Head>
@@ -14,6 +15,7 @@ const HomePage = (props) => {
         />
       </Head>
       <NewsletterRegistration />
+
       <EventList items={props.featuredEvents} />
     </div>
   );
