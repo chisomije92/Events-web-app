@@ -1,6 +1,7 @@
 import Layout from "../components/layout/layout";
 import "../styles/globals.css";
 import Head from "next/head";
+import Notification from "../components/UI/notification";
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -13,6 +14,7 @@ function MyApp({ Component, pageProps }) {
         />
       </Head>
       <Component {...pageProps} />
+      <Notification title="Test" message="This is a test" status="pending" />
     </Layout>
   );
 }
