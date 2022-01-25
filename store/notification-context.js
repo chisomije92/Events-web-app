@@ -1,15 +1,33 @@
 import { createContext, useState } from "react";
 
 const NotificationContext = createContext({
-    notification: null,
-    showNotification: () => {},
-    hideNotification = ()=>{}
-})
+  notification: null,
+  showNotification: (notificationData) => {},
+  hideNotification: () => {},
+});
 
 export const NotificationContextProvider = (props) => {
-    <NotificationContext.Provider>
-        {props.children}
-    </NotificationContext.Provider>
-}
+  const [activeNotification, setActiveNotification] = useState();
 
-export default NotificationContext
+  function showNotificationHandler(notificationData) {
+    setActiveNotification(notificationData);
+  }
+
+  function hideNotificationHandler() {
+    setActiveNotification(null);
+  }
+
+  const context = {
+    notification: activeNotification,
+    showNotification: showNotificationHandler,
+    hideNotification: hideNotificationHandler,
+  };
+
+  return (
+    <NotificationContext.Provider value={context}>
+      {props.children}
+    </NotificationContext.Provider>
+  );
+};
+
+export default NotificationContext;
